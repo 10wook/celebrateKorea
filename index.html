@@ -5,46 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./styles.css" />
     <title>태극기</title>
+    <style>
+        #flagContainer {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        #flagContainer img {
+            width: 3000px; /* 고정된 너비 설정 */
+            height: 2000px; /* 고정된 높이 설정 */
+            object-fit: contain; /* 이미지 비율을 유지하면서 크기 조정 */
+        }
+    </style>
   </head>
   <body>
-    <div id="flag">
-      <div id="group1">
-        <div id="gun">
-          <div></div>
-          <div></div>
-          <div></div>
-        </div>
-        <div id="circles">
-          <div id="top"></div>
-          <div id="bottom"></div>
-          <div id="left"></div>
-          <div id="right"></div>
-        </div>
-        <div id="gon">
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-        </div>
-      </div>
-      <div id="group2">
-        <div id="li">
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-        </div>
-        <div id="gam">
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-        </div>
-      </div>
+    <div id="flagContainer">
+        <img src="Flag.png" alt="South Korean Flag">
     </div>
-    <script src="./app.js"></script>
   </body>
 </html>
