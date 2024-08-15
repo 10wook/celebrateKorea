@@ -29,16 +29,21 @@
         }
 
         .flag {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            aspect-ratio: 3 / 2;
+            width: 90vw;
+            max-width: 600px;
             background-color: var(--white);
             border: 1px solid black;
             position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .taegeuk {
             position: absolute;
+            width: 33%;
+            height: 50%;
             background: linear-gradient(var(--red) 50%, var(--blue) 0);
             border-radius: 50%;
             transform: rotate(calc(atan2(2, 3) * 1rad));
@@ -47,21 +52,30 @@
         .taegeuk::before {
             position: absolute;
             content: "";
+            width: 50%;
+            height: 50%;
             border-radius: 50%;
             background-color: var(--red);
+            margin: 25% 0;
         }
 
         .taegeuk::after {
             position: absolute;
             content: "";
+            width: 50%;
+            height: 50%;
             border-radius: 50%;
             background-color: var(--blue);
+            margin: 25% 50%;
         }
 
         .trigrams {
             position: absolute;
+            width: 90%;
+            height: 90%;
             display: grid;
             grid-template-rows: repeat(2, 1fr);
+            gap: 5%;
         }
 
         .top,
@@ -75,6 +89,7 @@
         .water,
         .fire,
         .earth {
+            width: 30%;
             display: grid;
             gap: 10%;
             grid-template-rows: repeat(3, 1fr);
@@ -156,62 +171,6 @@
             </div>
         </div>
     </div>
-
-    <script>
-        function adjustFlagSize() {
-            const flag = document.getElementById('flag');
-            const taegeuk = document.getElementById('taegeuk');
-            const trigrams = document.getElementById('trigrams');
-            const sky = document.getElementById('sky');
-            const water = document.getElementById('water');
-            const fire = document.getElementById('fire');
-            const earth = document.getElementById('earth');
-
-            const screenWidth = window.innerWidth;
-            const screenHeight = window.innerHeight;
-
-            let flagWidth, flagHeight;
-
-            if (screenWidth / screenHeight < 1.5) {
-                flagWidth = screenWidth * 0.9;
-                flagHeight = flagWidth * 2 / 3;
-            } else {
-                flagHeight = screenHeight * 0.9;
-                flagWidth = flagHeight * 3 / 2;
-            }
-
-            flag.style.width = flagWidth + 'px';
-            flag.style.height = flagHeight + 'px';
-
-            const taegeukSize = flagWidth * 0.33;
-            taegeuk.style.width = taegeukSize + 'px';
-            taegeuk.style.height = taegeukSize * 0.5 + 'px';
-
-            const brickWidth = taegeukSize * 0.1;
-            const brickHeight = taegeukSize * 0.05;
-            const trigramsSize = taegeukSize * 0.6;
-
-            sky.style.width = trigramsSize + 'px';
-            sky.style.height = trigramsSize + 'px';
-            water.style.width = trigramsSize + 'px';
-            water.style.height = trigramsSize + 'px';
-            fire.style.width = trigramsSize + 'px';
-            fire.style.height = trigramsSize + 'px';
-            earth.style.width = trigramsSize + 'px';
-            earth.style.height = trigramsSize + 'px';
-
-            document.querySelectorAll('.brick').forEach(function (brick) {
-                brick.style.width = brickWidth + 'px';
-                brick.style.height = brickHeight + 'px';
-            });
-        }
-
-        // 처음 로드 시 크기 조정
-        adjustFlagSize();
-
-        // 화면 크기 변경 시 크기 조정
-        window.addEventListener('resize', adjustFlagSize);
-    </script>
 </body>
 
 </html>
