@@ -26,24 +26,18 @@
             justify-content: center;
             align-items: center;
             background-color: var(--white);
-            min-width:600px;
-        }
-
-        .flag-wrapper {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 90vw;
-            max-width: 600px;
-            height: auto;
         }
 
         .flag {
             position: relative;
-            width: 100%;
-            padding-top: 66.67%; /* 3:2 비율 유지 */
+            width: 90vw; /* 화면 너비의 90%로 설정 */
+            padding-top: 60%; /* 비율 3:2를 유지하기 위해 패딩 설정 */
             background-color: var(--white);
             border: 1px solid black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
         }
 
         .taegeuk {
@@ -51,7 +45,7 @@
             top: 50%;
             left: 50%;
             width: 33%;
-            height: auto;
+            height: 50%;
             background: linear-gradient(var(--red) 50%, var(--blue) 0);
             border-radius: 50%;
             transform: translate(-50%, -50%);
@@ -96,11 +90,11 @@
         .water,
         .fire,
         .earth {
-            width: 22%;
             display: grid;
             gap: 10%;
             grid-template-rows: repeat(3, 1fr);
             grid-template-columns: repeat(2, 1fr);
+            width: 22%; /* 태극 문양에 비례한 크기 */
         }
 
         .brick {
@@ -142,39 +136,37 @@
 
 <body>
     <div class="container">
-        <div class="flag-wrapper">
-            <div id="flag" class="flag">
-                <div id="taegeuk" class="taegeuk"></div>
-                <div id="trigrams" class="trigrams">
-                    <div class="top">
-                        <div id="sky" class="sky">
-                            <div class="brick"></div>
-                            <div class="brick"></div>
-                            <div class="brick"></div>
-                        </div>
-                        <div id="water" class="water">
-                            <div class="brick"></div>
-                            <div class="brick"></div>
-                            <div class="brick"></div>
-                            <div class="brick"></div>
-                            <div class="brick"></div>
-                        </div>
+        <div id="flag" class="flag">
+            <div id="taegeuk" class="taegeuk"></div>
+            <div id="trigrams" class="trigrams">
+                <div class="top">
+                    <div id="sky" class="sky">
+                        <div class="brick"></div>
+                        <div class="brick"></div>
+                        <div class="brick"></div>
                     </div>
-                    <div class="bottom">
-                        <div id="fire" class="fire">
-                            <div class="brick"></div>
-                            <div class="brick"></div>
-                            <div class="brick"></div>
-                            <div class="brick"></div>
-                        </div>
-                        <div id="earth" class="earth">
-                            <div class="brick"></div>
-                            <div class="brick"></div>
-                            <div class="brick"></div>
-                            <div class="brick"></div>
-                            <div class="brick"></div>
-                            <div class="brick"></div>
-                        </div>
+                    <div id="water" class="water">
+                        <div class="brick"></div>
+                        <div class="brick"></div>
+                        <div class="brick"></div>
+                        <div class="brick"></div>
+                        <div class="brick"></div>
+                    </div>
+                </div>
+                <div class="bottom">
+                    <div id="fire" class="fire">
+                        <div class="brick"></div>
+                        <div class="brick"></div>
+                        <div class="brick"></div>
+                        <div class="brick"></div>
+                    </div>
+                    <div id="earth" class="earth">
+                        <div class="brick"></div>
+                        <div class="brick"></div>
+                        <div class="brick"></div>
+                        <div class="brick"></div>
+                        <div class="brick"></div>
+                        <div class="brick"></div>
                     </div>
                 </div>
             </div>
