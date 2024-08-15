@@ -11,9 +11,6 @@
             --blue: #0047A0;
             --black: #000000;
             --white: #FFFFFF;
-            --trigrams-location-width: cos(atan2(2, 3)) * (11/18);
-            --trigrams-location-height: sin(atan2(2, 3)) * (11/12);
-            --brick-size: 1/6;
         }
 
         * {
@@ -32,10 +29,8 @@
         }
 
         .flag {
-            width: 90vw;
-            max-width: 600px;
-            height: calc(2/3 * 90vw);
-            max-height: 400px;
+            width: 100%;
+            height: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -50,7 +45,7 @@
             height: 50%;
             background: linear-gradient(var(--red) 50%, var(--blue) 0);
             border-radius: 50%;
-            rotate: calc(atan2(2, 3));
+            transform: rotate(calc(atan2(2, 3) * 1rad));
         }
 
         .taegeuk::before {
@@ -75,11 +70,11 @@
 
         .trigrams {
             position: absolute;
-            width: calc((var(--trigrams-location-width) + var(--brick-size)) * 100%);
-            height: calc((var(--trigrams-location-height) + var(--brick-size)) * 100%);
+            width: 100%;
+            height: 100%;
             display: grid;
             grid-template-rows: repeat(2, 1fr);
-            gap: calc(((var(--trigrams-location-width) - var(--brick-size)) / (var(--trigrams-location-width) + var(--brick-size))) * 100%);
+            gap: 5%;
         }
 
         .top,
@@ -93,10 +88,9 @@
         .water,
         .fire,
         .earth {
-            width: calc((var(--brick-size) / (var(--trigrams-location-width) + var(--brick-size))) * 100%);
+            width: 30%;
             display: grid;
-            column-gap: calc((1/12) * 100%);
-            row-gap: calc((1/8) * 100%);
+            gap: 10%;
             grid-template-rows: repeat(3, 1fr);
             grid-template-columns: repeat(2, 1fr);
         }
@@ -128,40 +122,20 @@
 
         .sky,
         .earth {
-            transform: rotate(atan2(3, -2));
+            transform: rotate(calc(atan2(3, -2) * 1rad));
         }
 
         .water,
         .fire {
-            transform: rotate(atan2(3, 2));
-        }
-
-        @media (max-width: 480px) {
-            .flag {
-                width: 90vw;
-                height: calc(2/3 * 90vw);
-            }
-
-            .taegeuk {
-                width: 40%;
-                height: 60%;
-            }
-
-            .sky,
-            .earth,
-            .water,
-            .fire {
-                width: 30%;
-            }
+            transform: rotate(calc(atan2(3, 2) * 1rad));
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <div class="flag">
+        <div id="flag" class="flag">
             <div class="taegeuk"></div>
-            <div class="trigrams"></div>
             <div class="trigrams">
                 <div class="top">
                     <div class="sky">
@@ -196,6 +170,35 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function adjustFlagSize() {
+            const flag = document.getElementById('flag');
+            const screenWidth = window.innerWidth;
+            const screenHeight = window.innerHeight;
+
+            // 태극기의 비율을 유지하면서 크기 조정
+            let flagWidth, flagHeight;
+
+            if (screenWidth / screenHeight < 1.5) {
+                flagWidth = screenWidth * 0.9;
+                flagHeight = flagWidth * 2 / 3;
+            } else {
+                flagHeight = screenHeight * 0.9;
+                flagWidth = flagHeight * 3 / 2;
+            }
+
+            flag.style.width = flagWidth + 'px';
+            flag.style.height = flagHeight + 'px';
+        }
+
+        // 처음 로드 시 크기 조정
+        adjustFlagSize();
+
+        // 화면 크기 변경 시 크기 조정
+        window.addEventListener('resize', adjustFlagSize);
+    </script>
 </body>
 
 </html>
+
