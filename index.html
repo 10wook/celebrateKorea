@@ -126,16 +126,33 @@
             grid-column: span 2;
         }
 
-
         .sky,
         .earth {
             transform: rotate(atan2(3, -2));
         }
 
-
         .water,
         .fire {
             transform: rotate(atan2(3, 2));
+        }
+
+        @media (max-width: 480px) {
+            .flag {
+                width: 90vw;
+                height: calc(2/3 * 90vw);
+            }
+
+            .taegeuk {
+                width: 40%;
+                height: 60%;
+            }
+
+            .sky,
+            .earth,
+            .water,
+            .fire {
+                width: 30%;
+            }
         }
     </style>
 </head>
