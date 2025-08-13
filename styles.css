@@ -1,5 +1,5 @@
 html {
-    zoom: 0.2;
+    zoom: 1;
   }
   
   body {
@@ -13,11 +13,12 @@ html {
   
   #flag {
     position: relative;
-    width: 1800px;
-    height: 1200px;
+    width: 100%;   /* 컨테이너 가로폭을 꽉 채움 */
+    height: 100%;  /* 컨테이너 세로폭을 꽉 채움 */
     border: 1px solid black;
     display: flex;
     justify-content: center;
+    align-items: center;
   }
   
   #group1 {
@@ -35,39 +36,39 @@ html {
   }
   
   #circles {
-    width: 600px;
-    height: 600px;
+    width: 33.333%;   /* 전체 폭의 1/3 */
+    height: 50%;       /* 전체 높이의 1/2 */
     position: relative;
   }
   
   #gun {
-    margin-right: 150px;
-    width: 200px;
-    height: 300px;
+    margin-right: 8.333%;
+    width: 11.111%;  /* 200 / 1800 */
+    height: 25%;      /* 300 / 1200 */
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 25px;
+    grid-template-rows: repeat(2, 1fr);
+    gap: 1.5%;        /* 대략 1.4% */
   }
   
   #gon {
-    margin-left: 150px;
-    width: 200px;
-    height: 300px;
+    margin-left: 8.333%;
+    width: 11.111%;  /* 200 / 1800 */
+    height: 25%;      /* 300 / 1200 */
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(2, 1fr);
-    gap: 25px;
+    gap: 1.5%;        /* 대략 1.4% */
   }
   
   #gam {
-    margin-left: 450px;
-    width: 200px;
-    height: 300px;
+    margin-left: 25%; grid-auto-flow: column;
+    width: 11.111%;  /* 200 / 1800 */
+    height: 25%;      /* 300 / 1200 */
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(2, 1fr);
-    grid-auto-flow: column;
-    gap: 25px;
+    gap: 1.5%;        /* 대략 1.4% */
   }
   
   #gam :nth-child(3) {
@@ -75,14 +76,13 @@ html {
   }
   
   #li {
-    margin-right: 450px;
-    width: 200px;
-    height: 300px;
+    margin-right: 25%; grid-auto-flow: column;
+    width: 11.111%;  /* 200 / 1800 */
+    height: 25%;      /* 300 / 1200 */
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(2, 1fr);
-    grid-auto-flow: column;
-    gap: 25px;
+    gap: 1.5%;        /* 대략 1.4% */
   }
   
   #li :first-child,
@@ -98,37 +98,35 @@ html {
   }
   
   #top {
-    width: 600px;
-    height: 300px;
-    border-radius: 300px 300px 0 0;
+    width: 100%;
+    height: 50%;
+    border-radius: 100% 100% 0 0;
     background-color: red;
   }
   
   #bottom {
-    width: 600px;
-    height: 300px;
-    border-radius: 0 0 300px 300px;
+    width: 100%;
+    height: 50%;
+    border-radius: 0 0 100% 100%;
     background-color: blue;
   }
   
-  #left {
-    width: 300px;
-    height: 300px;
-    background-color: red;
-    border-radius: 150px;
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-  }
-  
+  #left,
   #right {
-    width: 300px;
-    height: 300px;
-    background-color: blue;
-    border-radius: 150px;
+    width: 50%;
+    height: 50%;
     position: absolute;
-    right: 0;
     top: 50%;
     transform: translateY(-50%);
+    border-radius: 50%;
+  }
+
+  #left {
+    left: 0;
+    background-color: red;
+  }
+
+  #right {
+    right: 0;
+    background-color: blue;
   }
