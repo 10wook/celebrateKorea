@@ -9,27 +9,20 @@
         #flagContainer {
             text-align: center;
             margin-top: 50px;
-            width: 100%; /* 컨테이너가 화면 너비를 차지하도록 */
-            max-width: 100vw; /* 뷰포트 폭 이상 넘지 않도록 */
+            width: 90vw;            /* 화면 폭의 90% 사용 */
+            max-width: 900px;        /* 데스크톱에서 너무 커지지 않도록 제한 */
+            aspect-ratio: 3 / 2;     /* 태극기 공식 비율 3:2 유지 */
+            position: relative;      /* 자식 요소 정렬용 */
         }
 
         #flagContainer img {
-            width: 100%;
-            max-width: 100%; /* 이미지가 컨테이너를 가득 채우도록 */
-            height: auto; /* 비율 유지하면서 자동 조정 */
-            object-fit: contain; /* 이미지 비율을 유지하면서 크기 조정 */
+            /* 이미지 제거 - 더 이상 사용되지 않음 */
         }
     </style>
   </head>
   <body>
     <div id="flagContainer">
-
-
-
-
-
-        
-        <img src="Flag.svg" alt="South Korean Flag">
-    </div>
+        <img src="태극기.jpg" alt="대한민국 국기" style="width:100%;height:100%;object-fit:contain;" />
+        </div>
   </body>
 </html>
