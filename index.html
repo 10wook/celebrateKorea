@@ -9,11 +9,13 @@
         #flagContainer {
             text-align: center;
             margin-top: 50px;
+            width: 100%; /* 컨테이너가 화면 너비를 차지하도록 */
+            max-width: 100vw; /* 뷰포트 폭 이상 넘지 않도록 */
         }
 
         #flagContainer img {
             width: 100%;
-            max-width: 90vw; /* 최대 너비를 뷰포트 폭의 90%로 제한 */
+            max-width: 100%; /* 이미지가 컨테이너를 가득 채우도록 */
             height: auto; /* 비율 유지하면서 자동 조정 */
             object-fit: contain; /* 이미지 비율을 유지하면서 크기 조정 */
         }
