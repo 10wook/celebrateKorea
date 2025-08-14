@@ -129,3 +129,51 @@ if (group2) {
 
   start();
 })();
+
+// ---------------- PLAN-02: Flag waving + pointer wind ----------------
+(function initFlagAnimation() {
+  const flagEl = document.querySelector('.flag');
+  if (!flagEl) return;
+
+  let rafId = null;
+  let targetX = 0; let targetY = 0; let amp = 1;
+  let currentX = 0; let currentY = 0; let currentAmp = 1;
+
+  function update() {
+    currentX += (targetX - currentX) * 0.12;
+    currentY += (targetY - currentY) * 0.12;
+    currentAmp += (amp - currentAmp) * 0.08;
+    flagEl.style.setProperty('--windX', String(currentX.toFixed(2)));
+    flagEl.style.setProperty('--windY', String(currentY.toFixed(2)));
+    flagEl.style.setProperty('--windAmp', String(currentAmp.toFixed(2)));
+    rafId = requestAnimationFrame(update);
+  }
+
+  function onPointerMove(e) {
+    const vw = Math.max(1, window.innerWidth);
+    const vh = Math.max(1, window.innerHeight);
+    const nx = (e.clientX / vw) * 2 - 1; // -1 ~ 1
+    const ny = (e.clientY / vh) * 2 - 1; // -1 ~ 1
+    targetX = nx * 6; // yaw
+    targetY = ny * -4; // pitch (위로 갈수록 음)
+    amp = Math.min(1.5, Math.max(0.8, Math.hypot(nx, ny)));
+  }
+
+  function start() {
+    if (rafId) return;
+    rafId = requestAnimationFrame(update);
+    window.addEventListener('pointermove', onPointerMove, { passive: true });
+  }
+  function stop() {
+    if (rafId) cancelAnimationFrame(rafId);
+    rafId = null;
+    window.removeEventListener('pointermove', onPointerMove);
+  }
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) stop();
+    else start();
+  });
+
+  start();
+})();

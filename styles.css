@@ -146,6 +146,34 @@ html {
     box-shadow: 0 8px 24px rgba(0,0,0,0.12);
     backdrop-filter: blur(6px);
   }
+  /* PLAN-02: Flag waving animation and pointer wind */
+  :root {
+    --windX: 0;
+    --windY: 0;
+    --windAmp: 1;
+  }
+  .flag {
+    will-change: transform, filter;
+    animation: flagWave 3s ease-in-out infinite;
+    transform-origin: center center;
+  }
+  @keyframes flagWave {
+    0% {
+      transform: perspective(900px) rotateY(calc(var(--windX) * 1deg)) rotateX(calc(var(--windY) * 0.6deg)) translateZ(0);
+      filter: brightness(1) saturate(1);
+    }
+    50% {
+      transform: perspective(900px) rotateY(calc(var(--windX) * 4deg * var(--windAmp))) rotateX(calc(var(--windY) * 2deg * var(--windAmp))) translateZ(0);
+      filter: brightness(1.02) saturate(1.03);
+    }
+    100% {
+      transform: perspective(900px) rotateY(calc(var(--windX) * 1deg)) rotateX(calc(var(--windY) * 0.6deg)) translateZ(0);
+      filter: brightness(1) saturate(1);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .flag { animation: none; }
+  }
   @media (prefers-color-scheme: dark) {
     #infoContainer { background: rgba(20, 20, 20, 0.9); color: #f5f5f5; }
 
