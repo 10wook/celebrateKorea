@@ -133,6 +133,7 @@ if (group2) {
 // ---------------- PLAN-02: Flag waving + pointer wind ----------------
 (function initFlagAnimation() {
   const flagEl = document.querySelector('.flag');
+  const canvas = document.getElementById('flagCanvas');
   if (!flagEl) return;
 
   let rafId = null;
@@ -176,4 +177,98 @@ if (group2) {
   });
 
   start();
+})();
+
+// ---------------- PLAN-02 (advanced): Canvas wave flag ----------------
+(function initCanvasFlagWave() {
+  const img = document.querySelector('.flag');
+  const canvas = document.getElementById('flagCanvas');
+  if (!img || !canvas) return;
+
+  // Respect reduced motion
+  const mediaReduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (mediaReduced.matches) return;
+
+  const ctx = canvas.getContext('2d');
+  let w = 0, h = 0;
+  let time = 0;
+  let wind = { x: 0, y: 0, amp: 1 };
+
+  function resize() {
+    // Fit canvas to displayed image size
+    const rect = img.getBoundingClientRect();
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    w = Math.max(2, Math.floor(rect.width * dpr));
+    h = Math.max(2, Math.floor(rect.height * dpr));
+    canvas.width = w;
+    canvas.height = h;
+    canvas.style.width = rect.width + 'px';
+    canvas.style.height = rect.height + 'px';
+  }
+
+  function drawWave() {
+    ctx.clearRect(0, 0, w, h);
+    // Columns rendering (vertical strips)
+    const columns = 160; // quality
+    const colW = Math.ceil(w / columns);
+    const baseAmp = 8 * wind.amp; // pixels
+    const speed = 1.2 + Math.abs(wind.x) * 0.25;
+    for (let i = 0; i < columns; i++) {
+      const sx = i * colW;
+      const progress = i / columns; // 0..1 left->right
+      const phase = time * speed + progress * 6.283; // 2pi
+      const offsetY = Math.sin(phase) * baseAmp + Math.cos(phase * 0.5) * (baseAmp * 0.4);
+      // Source rect from image
+      ctx.drawImage(
+        img,
+        sx / (w) * img.naturalWidth,
+        0,
+        Math.min(colW / w * img.naturalWidth, img.naturalWidth - (sx / w * img.naturalWidth)),
+        img.naturalHeight,
+        sx,
+        Math.round(offsetY),
+        colW,
+        h
+      );
+    }
+  }
+
+  let rafId = null;
+  function tick() {
+    time += 0.03 + Math.abs(wind.x) * 0.01;
+    drawWave();
+    rafId = requestAnimationFrame(tick);
+  }
+
+  function onPointer(e) {
+    const vw = Math.max(1, window.innerWidth);
+    const vh = Math.max(1, window.innerHeight);
+    const nx = (e.clientX / vw) * 2 - 1;
+    const ny = (e.clientY / vh) * 2 - 1;
+    wind.x = nx;
+    wind.y = ny;
+    wind.amp = Math.min(1.8, Math.max(0.8, Math.hypot(nx, ny)));
+  }
+
+  function start() {
+    resize();
+    img.style.visibility = 'hidden'; // use canvas rendering instead
+    rafId = requestAnimationFrame(tick);
+    window.addEventListener('resize', resize);
+    window.addEventListener('pointermove', onPointer, { passive: true });
+  }
+  function stop() {
+    if (rafId) cancelAnimationFrame(rafId);
+    rafId = null;
+    window.removeEventListener('resize', resize);
+    window.removeEventListener('pointermove', onPointer);
+  }
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) stop();
+    else start();
+  });
+
+  if (img.complete) start();
+  else img.addEventListener('load', start, { once: true });
 })();
