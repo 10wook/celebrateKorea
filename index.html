@@ -17,9 +17,11 @@
         }
 
         #flagContainer img {
-            width: 3000px; /* 고정된 너비 설정 */
-            height: 2000px; /* 고정된 높이 설정 */
-            object-fit: contain; /* 이미지 비율을 유지하면서 크기 조정 */
+            width: 100%;
+            height: auto;
+            max-width: min(90vw, 1400px);
+            max-height: 80vh;
+            object-fit: contain; /* 이미지 비율 유지 + 반응형 크기 */
         }
     </style>
   </head>

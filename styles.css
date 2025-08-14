@@ -3,10 +3,8 @@ html {
   }
   
   body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+    display: block;
+    min-height: 100vh;
     width: 100%;
     margin: 0;
   }
@@ -141,11 +139,11 @@ html {
     transform: translateX(-50%);
     background: rgba(255, 255, 255, 0.85);
     color: #111;
-    padding: 16px 22px;
+    padding: 18px 26px;
     border-radius: 12px;
     font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-    font-weight: 700;
-    font-size: clamp(18px, 2.4vw, 28px);
+    font-weight: 800;
+    font-size: clamp(36px, 12vw, 56px);
     box-shadow: 0 8px 24px rgba(0,0,0,0.12);
     backdrop-filter: blur(6px);
   }
