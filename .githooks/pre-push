@@ -1,0 +1,74 @@
+#!/bin/sh
+set -eu
+
+create_issue_with_gh() {
+  issue_title=$1
+  body_file=$2
+  if gh issue list --state all --limit 200 | grep -F "$issue_title" >/dev/null 2>&1; then
+    echo "[pre-push] Issue already exists: $issue_title"
+  else
+    echo "[pre-push] Creating issue via gh: $issue_title"
+    gh issue create -t "$issue_title" -F "$body_file" -l plan || echo "[pre-push] Failed to create via gh: $issue_title" >&2
+  fi
+}
+
+create_issue_with_api() {
+  issue_title=$1
+  body_file=$2
+  origin=$(git config --get remote.origin.url || true)
+  case "$origin" in
+    https://github.com/*/*.git)
+      owner=$(printf "%s" "$origin" | sed -E 's#https://github.com/([^/]+)/([^/]+)\.git#\1#')
+      repo=$(printf "%s" "$origin" | sed -E 's#https://github.com/([^/]+)/([^/]+)\.git#\2#')
+      ;;
+    git@github.com:*/*.git)
+      owner=$(printf "%s" "$origin" | sed -E 's#git@github.com:([^/]+)/([^/]+)\.git#\1#')
+      repo=$(printf "%s" "$origin" | sed -E 's#git@github.com:([^/]+)/([^/]+)\.git#\2#')
+      ;;
+    *)
+      echo "[pre-push] Cannot parse origin URL: $origin" >&2
+      return 0
+      ;;
+  esac
+
+  api="https://api.github.com/repos/$owner/$repo"
+  token=${GH_TOKEN:-}
+  if [ -z "$token" ]; then
+    echo "[pre-push] GH_TOKEN not set; skipping API issue creation for $issue_title" >&2
+    return 0
+  fi
+
+  # Check existing issues
+  if curl -s -H "Authorization: token $token" -H "Accept: application/vnd.github+json" "$api/issues?state=all&per_page=100" | grep -F "\"title\": \"$issue_title\"" >/dev/null 2>&1; then
+    echo "[pre-push] Issue already exists (API): $issue_title"
+    return 0
+  fi
+
+  echo "[pre-push] Creating issue via API: $issue_title"
+  body_json=$(jq -Rs . < "$body_file" 2>/dev/null || python -c "import json,sys; print(json.dumps(sys.stdin.read()))" < "$body_file")
+  payload=$(printf '{"title":%s,"body":%s,"labels":["plan"]}' "$(printf '%s' "$issue_title" | jq -R .)" "$body_json")
+
+  curl -s -X POST "$api/issues" \
+    -H "Authorization: token $token" \
+    -H "Accept: application/vnd.github+json" \
+    -H "Content-Type: application/json" \
+    -d "$payload" >/dev/null 2>&1 || echo "[pre-push] Failed to create via API: $issue_title" >&2
+}
+
+# Create issues from PLAN-*.md files
+for file in PLAN-*.md; do
+  [ -f "$file" ] || continue
+  plan_id=$(printf "%s" "$file" | sed -E 's/.*PLAN-([0-9]+).*/\1/')
+  title_part=$(grep -m1 '^## ' "$file" | sed -E 's/^##[[:space:]]*//')
+  [ -n "$title_part" ] || title_part="$file"
+  issue_title="[PLAN-$plan_id] $title_part"
+
+  if command -v gh >/dev/null 2>&1; then
+    create_issue_with_gh "$issue_title" "$file"
+  else
+    create_issue_with_api "$issue_title" "$file"
+  fi
+done
+
+exit 0
+
