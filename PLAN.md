@@ -8,8 +8,13 @@
   - 야간 자동 어두운 테마(별이 빛나는 모드)와 수동 토글
 
 ### 현재 상태 요약
-- 단일 페이지 구조(`index.html`, `styles.css`, `app.js`)로 태극기 이미지(`Flag.svg`)만 표시
-- 향후 유지보수를 고려해 기능을 `app.js` 내부에서 모듈화된 섹션으로 분리 구현
+- 단일 페이지 구조(`index.html`, `styles.css`, `app.js`, `flag-scene.js`, `sky-environment.js`)
+- **PLAN-01** 광복절 카운트다운 ✅
+- **PLAN-02** 태극기 펄럭임 → PLAN-05 Three.js 셰이더로 대체 ✅
+- **PLAN-03** SNS 공유 버튼 ✅
+- **PLAN-04** 다크 테마 + 별 오버레이 ✅
+- **PLAN-05** Three.js 국기봉 + 펄럭임 ✅
+- **PLAN-06** 운동장 + OrbitControls + KST 낮/밤 하늘 ✅
 
 ---
 
