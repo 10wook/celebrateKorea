@@ -1,12 +1,14 @@
 import * as THREE from "three";
-import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { createSkyEnvironment, createStadium } from "./sky-environment.js";
+import { isHalfMastToday } from "./flag-days.js";
+import { createVisitorAvatar } from "./visitor-avatar.js";
+import { createTpsCamera } from "./tps-camera.js";
+import { getControlsHint } from "./virtual-joystick.js";
 
 const FLAG_WIDTH = 3;
 const FLAG_HEIGHT = 2;
 const POLE_HEIGHT = 5;
 const POLE_RADIUS = 0.045;
-const LOOK_TARGET = new THREE.Vector3(FLAG_WIDTH / 2, POLE_HEIGHT * 0.45, 0);
 
 const vertexShader = `
   uniform float uTime;
@@ -47,8 +49,7 @@ export function initFlagScene(container) {
   const scene = new THREE.Scene();
   scene.fog = new THREE.Fog(0xb8e0f8, 30, 90);
 
-  const camera = new THREE.PerspectiveCamera(48, 1, 0.1, 200);
-  camera.position.set(6, 4.5, 12);
+  const camera = new THREE.PerspectiveCamera(58, 1, 0.1, 200);
 
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -56,16 +57,7 @@ export function initFlagScene(container) {
   container.appendChild(renderer.domElement);
   renderer.domElement.setAttribute("aria-hidden", "true");
 
-  const controls = new OrbitControls(camera, renderer.domElement);
-  controls.target.copy(LOOK_TARGET);
-  controls.enableDamping = true;
-  controls.dampingFactor = 0.06;
-  controls.minDistance = 5;
-  controls.maxDistance = 38;
-  controls.maxPolarAngle = Math.PI / 2 - 0.08;
-  controls.minPolarAngle = 0.25;
-  controls.enablePan = false;
-  controls.update();
+  const tpsCamera = createTpsCamera({ camera, container });
 
   const sky = createSkyEnvironment(scene);
   createStadium(scene);
@@ -110,8 +102,38 @@ export function initFlagScene(container) {
   });
 
   const flag = new THREE.Mesh(flagGeometry, flagMaterial);
-  flag.position.set(FLAG_WIDTH / 2, POLE_HEIGHT - FLAG_HEIGHT / 2, 0);
   scene.add(flag);
+
+  function updateFlagFlyHeight(halfMast = isHalfMastToday()) {
+    const centerY = halfMast
+      ? POLE_HEIGHT - FLAG_HEIGHT * 1.5
+      : POLE_HEIGHT - FLAG_HEIGHT / 2;
+    flag.position.set(FLAG_WIDTH / 2, centerY, 0);
+  }
+
+  updateFlagFlyHeight();
+
+  window.addEventListener("flagdaychange", (e) => {
+    updateFlagFlyHeight(e.detail?.halfMast ?? false);
+  });
+
+  const visitor = createVisitorAvatar({
+    scene,
+    container,
+    reducedMotion,
+    getCameraYaw: () => tpsCamera.getYaw(),
+  });
+
+  const crosshair = document.createElement("div");
+  crosshair.className = "tps-crosshair";
+  crosshair.setAttribute("aria-hidden", "true");
+  container.appendChild(crosshair);
+
+  const moveHint = document.createElement("div");
+  moveHint.className = "scene-hint";
+  moveHint.textContent = getControlsHint();
+  container.appendChild(moveHint);
+  setTimeout(() => moveHint.classList.add("fade-out"), 6000);
 
   const wind = { x: 0, y: 0 };
   let pointerPending = false;
@@ -125,20 +147,6 @@ export function initFlagScene(container) {
 
   container.addEventListener("pointermove", onPointerMove, { passive: true });
 
-  const hint = document.createElement("div");
-  hint.className = "scene-hint";
-  hint.textContent = "드래그로 시점 이동";
-  container.appendChild(hint);
-  let hintTimer = setTimeout(() => hint.classList.add("fade-out"), 4000);
-  container.addEventListener(
-    "pointerdown",
-    () => {
-      hint.classList.add("fade-out");
-      clearTimeout(hintTimer);
-    },
-    { once: true }
-  );
-
   function resize() {
     const w = container.clientWidth;
     const h = container.clientHeight;
@@ -146,10 +154,13 @@ export function initFlagScene(container) {
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
     renderer.setSize(w, h, false);
+    visitor.resize(w, h);
   }
 
   resize();
   window.addEventListener("resize", resize);
+
+  tpsCamera.update(visitor.getPosition(), 1);
 
   let rafId = null;
   const clock = new THREE.Clock();
@@ -162,16 +173,19 @@ export function initFlagScene(container) {
       pointerPending = false;
     }
 
+    const dt = Math.min(clock.getDelta(), 0.05);
     const t = clock.getElapsedTime();
     flagMaterial.uniforms.uTime.value = t;
 
     const windBoost = 1 + Math.abs(wind.x) * 0.4 + Math.abs(wind.y) * 0.2;
     flagMaterial.uniforms.uAmplitude.value = baseAmplitude * windBoost;
 
+    visitor.update(dt);
+    tpsCamera.update(visitor.getPosition(), dt);
     sky.update(new Date(), t);
-    controls.update();
 
     renderer.render(scene, camera);
+    visitor.renderLabels(camera);
   }
 
   function start() {
@@ -208,8 +222,7 @@ export function initFlagScene(container) {
   });
 
   syncSkyTheme();
-
   start();
 
-  return { scene, camera, renderer, controls, stop, sky };
+  return { scene, camera, renderer, stop, sky, visitor, tpsCamera };
 }

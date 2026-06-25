@@ -35,11 +35,14 @@
       </noscript>
     </div>
     <main id="infoContainer" aria-live="polite">
+      <div id="flagDayPicker" class="flag-day-picker" role="tablist" aria-label="기념일 선택"></div>
+      <div id="flagDayLabel" class="flag-day-label"></div>
       <div id="countdown" role="status"></div>
       <div id="annivMessage" hidden></div>
     </main>
     <div id="toast" role="status" aria-live="polite" hidden></div>
     <script defer src="./app.js"></script>
+    <script type="module" src="./countdown.js"></script>
     <script type="module">
       import { initFlagScene } from "./flag-scene.js";
       initFlagScene(document.getElementById("flagContainer"));
